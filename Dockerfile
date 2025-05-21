@@ -1,8 +1,6 @@
 # Etapa 1: Build con Maven
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Copiar archivos y compilar
 COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
@@ -14,8 +12,14 @@ WORKDIR /app
 # Copiar JAR generado
 COPY --from=build /app/target/*.jar app.jar
 
-# Exponer el puerto usado por Spring Boot
+# Copiar script de inicio
+COPY entrypoint.sh .
+
+# Dar permisos de ejecución
+RUN chmod +x entrypoint.sh
+
+# Exponer puerto
 EXPOSE 8080
 
-# Ejecutar la app con variables de entorno en tiempo de ejecución
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Usar entrypoint
+ENTRYPOINT ["./entrypoint.sh"]
