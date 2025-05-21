@@ -18,6 +18,9 @@ COPY entrypoint.sh .
 # Dar permisos de ejecución
 RUN chmod +x entrypoint.sh
 
+# Instalar netcat (necesario para verificar conexión con la DB)
+RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
+
 # Exponer puerto
 EXPOSE 8080
 
